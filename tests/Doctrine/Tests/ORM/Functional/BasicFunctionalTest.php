@@ -4,7 +4,6 @@ namespace Doctrine\Tests\ORM\Functional;
 
 use Doctrine\DBAL\Logging\DebugStack;
 use Doctrine\ORM\EntityNotFoundException;
-use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\FetchMode;
 use Doctrine\ORM\ORMInvalidArgumentException;
 use Doctrine\ORM\PersistentCollection;
@@ -17,6 +16,7 @@ use Doctrine\Tests\Models\CMS\CmsComment;
 use Doctrine\Tests\Models\CMS\CmsPhonenumber;
 use Doctrine\Tests\Models\CMS\CmsUser;
 use Doctrine\Tests\OrmFunctionalTestCase;
+use ProxyManager\Proxy\GhostObjectInterface;
 
 class BasicFunctionalTest extends OrmFunctionalTestCase
 {
@@ -688,9 +688,9 @@ class BasicFunctionalTest extends OrmFunctionalTestCase
                 ->setParameter('user', $userRef)
                 ->getSingleResult();
 
-        self::assertInstanceOf(Proxy::class, $address2->getUser());
+        self::assertInstanceOf(GhostObjectInterface::class, $address2->getUser());
         self::assertTrue($userRef === $address2->getUser());
-        self::assertFalse($userRef->__isInitialized());
+        self::assertFalse($userRef->isProxyInitialized());
         self::assertEquals('Germany', $address2->country);
         self::assertEquals('Berlin', $address2->city);
         self::assertEquals('12345', $address2->zip);
@@ -998,9 +998,8 @@ class BasicFunctionalTest extends OrmFunctionalTestCase
             ->setParameter(1, $article->id)
             ->setFetchMode(CmsArticle::class, 'user', FetchMode::EAGER)
             ->getSingleResult();
-
-        self::assertInstanceOf(Proxy::class, $article->user, "It IS a proxy, ...");
-        self::assertTrue($article->user->__isInitialized(), "...but its initialized!");
+        self::assertInstanceOf(GhostObjectInterface::class, $article->user, "It IS a proxy, ...");
+        self::assertTrue($article->user->isProxyInitialized(), "...but its initialized!");
         self::assertEquals($qc+2, $this->getCurrentQueryCount());
     }
 

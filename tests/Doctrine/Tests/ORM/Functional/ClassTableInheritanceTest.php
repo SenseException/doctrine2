@@ -13,6 +13,7 @@ use Doctrine\Tests\Models\Company\CompanyOrganization;
 use Doctrine\Tests\Models\Company\CompanyPerson;
 use Doctrine\Tests\Models\Company\CompanyRaffle;
 use Doctrine\Tests\OrmFunctionalTestCase;
+use ProxyManager\Proxy\GhostObjectInterface;
 
 /**
  * Functional tests for the Class Table Inheritance mapping strategy.
@@ -431,7 +432,7 @@ class ClassTableInheritanceTest extends OrmFunctionalTestCase
         $this->em->clear();
 
         $ref = $this->em->getReference(CompanyManager::class, $manager->getId());
-        self::assertInstanceOf(Proxy::class, $ref, "A proxy can be generated only if no subclasses exists for the requested reference.");
+        self::assertInstanceOf(GhostObjectInterface::class, $ref, "A proxy can be generated only if no subclasses exists for the requested reference.");
     }
 
     /**

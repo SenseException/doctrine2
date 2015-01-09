@@ -5,6 +5,7 @@ namespace Doctrine\Tests\ORM\Functional\Ticket;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\ORM\Annotation as ORM;
+use ProxyManager\Proxy\GhostObjectInterface;
 
 /**
  * @group DDC-2494
@@ -51,7 +52,7 @@ class DDC2494Test extends \Doctrine\Tests\OrmFunctionalTestCase
 
         $queryCount = $this->getCurrentQueryCount();
 
-        self::assertInstanceOf('Doctrine\ORM\Proxy\Proxy', $item->getCurrency());
+        self::assertInstanceOf(GhostObjectInterface::class, $item->getCurrency());
         self::assertFalse($item->getCurrency()->__isInitialized());
 
         self::assertArrayHasKey('convertToPHPValue', DDC2494TinyIntType::$calls);

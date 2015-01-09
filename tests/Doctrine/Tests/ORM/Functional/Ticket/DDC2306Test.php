@@ -5,6 +5,7 @@ namespace Doctrine\Tests\ORM\Functional\Ticket;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Annotation as ORM;
 use Doctrine\ORM\Proxy\Proxy;
+use ProxyManager\Proxy\GhostObjectInterface;
 
 /**
  * @group DDC-2306
@@ -61,7 +62,7 @@ class DDC2306Test extends \Doctrine\Tests\OrmFunctionalTestCase
         /* @var $user DDC2306User|Proxy */
         $user    = $address->users->first()->user;
 
-        self::assertInstanceOf(Proxy::class, $user);
+        self::assertInstanceOf(GhostObjectInterface::class, $user);
         self::assertInstanceOf(DDC2306User::class, $user);
 
         $userId = $user->id;

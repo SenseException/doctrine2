@@ -5,12 +5,13 @@ namespace Doctrine\Tests\ORM\Functional;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
-use Doctrine\ORM\Proxy\Proxy;
 use Doctrine\Tests\Models\CMS\CmsUser;
 use Doctrine\Tests\Models\CMS\CmsPhonenumber;
 use Doctrine\Tests\Models\CMS\CmsAddress;
 use Doctrine\Tests\Models\CMS\CmsArticle;
 use Doctrine\Tests\OrmFunctionalTestCase;
+use Doctrine\ORM\UnitOfWork;
+use ProxyManager\Proxy\GhostObjectInterface;
 
 /**
  * Description of DetachedEntityTest
@@ -146,16 +147,16 @@ class DetachedEntityTest extends OrmFunctionalTestCase
         $this->em->clear();
 
         $address2 = $this->em->find(get_class($address), $address->id);
-        self::assertInstanceOf(Proxy::class, $address2->user);
-        self::assertFalse($address2->user->__isInitialized());
+        self::assertInstanceOf(GhostObjectInterface::class, $address2->user);
+        self::assertFalse($address2->user->isProxyInitialized());
         $detachedAddress2 = unserialize(serialize($address2));
-        self::assertInstanceOf(Proxy::class, $detachedAddress2->user);
-        self::assertFalse($detachedAddress2->user->__isInitialized());
+        self::assertInstanceOf(GhostObjectInterface::class, $detachedAddress2->user);
+        self::assertFalse($detachedAddress2->user->isProxyInitialized());
 
         $managedAddress2 = $this->em->merge($detachedAddress2);
-        self::assertInstanceOf(Proxy::class, $managedAddress2->user);
+        self::assertInstanceOf(GhostObjectInterface::class, $managedAddress2->user);
         self::assertFalse($managedAddress2->user === $detachedAddress2->user);
-        self::assertFalse($managedAddress2->user->__isInitialized());
+        self::assertFalse($managedAddress2->user->isProxyInitialized());
     }
 
     /**

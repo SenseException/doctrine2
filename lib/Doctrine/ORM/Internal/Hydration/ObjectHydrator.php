@@ -30,6 +30,7 @@ use Doctrine\ORM\PersistentCollection;
 use Doctrine\ORM\Proxy\Proxy;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\UnitOfWork;
+use ProxyManager\Proxy\GhostObjectInterface;
 
 /**
  * The ObjectHydrator constructs an object graph out of an SQL result set.
@@ -415,8 +416,7 @@ class ObjectHydrator extends AbstractHydrator
                     // PATH B: Single-valued association
                     $reflFieldValue = $association->getValue($parentObject);
 
-                    if (! $reflFieldValue || isset($this->hints[Query::HINT_REFRESH]) ||
-                        ($reflFieldValue instanceof Proxy && ! $reflFieldValue->__isInitialized())) {
+                    if ( ! $reflFieldValue || isset($this->hints[Query::HINT_REFRESH]) || ($reflFieldValue instanceof GhostObjectInterface && !$reflFieldValue->isProxyInitialized())) {
                         // we only need to take action if this value is null,
                         // we refresh the entity or its an uninitialized proxy.
                         if (isset($nonemptyComponents[$dqlAlias])) {

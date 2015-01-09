@@ -142,7 +142,7 @@ class ProxyFactoryTest extends OrmTestCase
 
         $this->uowMock->setEntityPersister(ECommerceFeature::class, $persister);
 
-        /* @var $proxy \Doctrine\Common\Proxy\Proxy */
+        /* @var $proxy \ProxyManager\Proxy\GhostObjectInterface|\Doctrine\Tests\Models\ECommerce\ECommerceFeature */
         $proxy = $this->proxyFactory->getProxy(ECommerceFeature::class, ['id' => 42]);
 
         try {
@@ -151,7 +151,9 @@ class ProxyFactoryTest extends OrmTestCase
         } catch (EntityNotFoundException $exception) {
         }
 
-        self::assertFalse($proxy->__isInitialized());
+        self::assertFalse($proxy->isProxyInitialized());
+        self::assertInstanceOf('Closure', $proxy->getProxyInitializer(), 'The initializer wasn\'t removed');
+        //$this->assertInstanceOf('Closure', $proxy->__getCloner(), 'The cloner wasn\'t removed');
     }
 
     /**
@@ -179,7 +181,7 @@ class ProxyFactoryTest extends OrmTestCase
 
         $this->uowMock->setEntityPersister(ECommerceFeature::class, $persister);
 
-        /* @var $proxy \Doctrine\Common\Proxy\Proxy */
+        /* @var $proxy \ProxyManager\Proxy\GhostObjectInterface */
         $proxy = $this->proxyFactory->getProxy(ECommerceFeature::class, ['id' => 42]);
 
         try {
@@ -188,7 +190,8 @@ class ProxyFactoryTest extends OrmTestCase
         } catch (EntityNotFoundException $exception) {
         }
 
-        self::assertFalse($proxy->__isInitialized());
+        self::assertFalse($proxy->isProxyInitialized());
+        self::assertInstanceOf('Closure', $proxy->getProxyInitializer(), 'The initializer wasn\'t removed');
     }
 
     public function testProxyClonesParentFields()
@@ -223,7 +226,7 @@ class ProxyFactoryTest extends OrmTestCase
 
         $this->uowMock->setEntityPersister(CompanyEmployee::class, $persister);
 
-        /* @var $proxy \Doctrine\Common\Proxy\Proxy */
+        /* @var $proxy \ProxyManager\Proxy\GhostObjectInterface */
         $proxy = $this->proxyFactory->getProxy(CompanyEmployee::class, ['id' => 42]);
 
         /* @var $cloned CompanyEmployee */

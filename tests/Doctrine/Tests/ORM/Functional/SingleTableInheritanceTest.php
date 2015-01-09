@@ -13,6 +13,7 @@ use Doctrine\Tests\Models\Company\CompanyFixContract;
 use Doctrine\Tests\Models\Company\CompanyFlexContract;
 use Doctrine\Tests\Models\Company\CompanyFlexUltraContract;
 use Doctrine\Tests\OrmFunctionalTestCase;
+use ProxyManager\Proxy\GhostObjectInterface;
 
 class SingleTableInheritanceTest extends OrmFunctionalTestCase
 {
@@ -400,7 +401,7 @@ class SingleTableInheritanceTest extends OrmFunctionalTestCase
         $this->em->clear();
 
         $ref = $this->em->getReference(CompanyFixContract::class, $this->fix->getId());
-        self::assertInstanceOf(Proxy::class, $ref, "A proxy can be generated only if no subclasses exists for the requested reference.");
+        self::assertInstanceOf(GhostObjectInterface::class, $ref, "A proxy can be generated only if no subclasses exists for the requested reference.");
     }
 
     /**

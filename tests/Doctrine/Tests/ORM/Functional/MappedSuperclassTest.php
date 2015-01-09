@@ -2,7 +2,7 @@
 
 namespace Doctrine\Tests\ORM\Functional;
 
-use Doctrine\ORM\Proxy\Proxy;
+use ProxyManager\Proxy\GhostObjectInterface;
 use Doctrine\Tests\Models\DirectoryTree\Directory;
 use Doctrine\Tests\Models\DirectoryTree\File;
 use Doctrine\Tests\OrmFunctionalTestCase;
@@ -44,7 +44,7 @@ class MappedSuperclassTest extends OrmFunctionalTestCase
         $cleanFile = $this->em->find(File::class, $file->getId());
 
         self::assertInstanceOf(Directory::class, $cleanFile->getParent());
-        self::assertInstanceOf(Proxy::class, $cleanFile->getParent());
+        self::assertInstanceOf(GhostObjectInterface::class, $cleanFile->getParent());
         self::assertEquals($directory->getId(), $cleanFile->getParent()->getId());
         self::assertInstanceOf(Directory::class, $cleanFile->getParent()->getParent());
         self::assertEquals($root->getId(), $cleanFile->getParent()->getParent()->getId());

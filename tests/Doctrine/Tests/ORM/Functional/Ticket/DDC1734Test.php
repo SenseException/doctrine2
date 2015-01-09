@@ -2,8 +2,8 @@
 
 namespace Doctrine\Tests\ORM\Functional\Ticket;
 
-use Doctrine\ORM\Proxy\Proxy;
 use Doctrine\Tests\Models\CMS\CmsGroup;
+use ProxyManager\Proxy\GhostObjectInterface;
 
 class DDC1734Test extends \Doctrine\Tests\OrmFunctionalTestCase
 {
@@ -32,8 +32,8 @@ class DDC1734Test extends \Doctrine\Tests\OrmFunctionalTestCase
 
         $proxy = $this->getProxy($group);
 
-        self::assertInstanceOf(Proxy::class, $proxy);
-        self::assertFalse($proxy->__isInitialized());
+        self::assertInstanceOf(GhostObjectInterface::class, $proxy);
+        self::assertFalse($proxy->isProxyInitialized());
 
         $this->em->detach($proxy);
         $this->em->clear();
@@ -62,8 +62,8 @@ class DDC1734Test extends \Doctrine\Tests\OrmFunctionalTestCase
 
         $proxy = $this->getProxy($group);
 
-        self::assertInstanceOf(Proxy::class, $proxy);
-        self::assertFalse($proxy->__isInitialized());
+        self::assertInstanceOf(GhostObjectInterface::class, $proxy);
+        self::assertFalse($proxy->isProxyInitialized());
 
         $this->em->detach($proxy);
         $serializedProxy = serialize($proxy);
@@ -76,7 +76,7 @@ class DDC1734Test extends \Doctrine\Tests\OrmFunctionalTestCase
     /**
      * @param object $object
      *
-     * @return \Doctrine\Common\Proxy\Proxy
+     * @return \ProxyManager\Proxy\GhostObjectInterface
      */
     private function getProxy($object)
     {

@@ -14,6 +14,7 @@ use Doctrine\Tests\Models\Cache\Attraction;
 use Doctrine\Tests\Models\Cache\City;
 use Doctrine\Tests\Models\Cache\Country;
 use Doctrine\Tests\Models\Cache\State;
+use ProxyManager\Proxy\GhostObjectInterface;
 
 /**
  * @group DDC-2183
@@ -938,7 +939,7 @@ class SecondLevelCacheQueryCacheTest extends SecondLevelCacheAbstractTest
         self::assertNotNull($state1->getCountry());
         self::assertEquals($queryCount + 1, $this->getCurrentQueryCount());
         self::assertInstanceOf(State::class, $state1);
-        self::assertInstanceOf(Proxy::class, $state1->getCountry());
+        self::assertInstanceOf(GhostObjectInterface::class, $state1->getCountry());
         self::assertEquals($countryName, $state1->getCountry()->getName());
         self::assertEquals($stateId, $state1->getId());
 
@@ -1030,7 +1031,7 @@ class SecondLevelCacheQueryCacheTest extends SecondLevelCacheAbstractTest
 
         self::assertEquals($queryCount + 1, $this->getCurrentQueryCount());
         self::assertInstanceOf(State::class, $state1);
-        self::assertInstanceOf(Proxy::class, $state1->getCountry());
+        self::assertInstanceOf(GhostObjectInterface::class, $state1->getCountry());
         self::assertInstanceOf(City::class, $state1->getCities()->get(0));
         self::assertInstanceOf(State::class, $state1->getCities()->get(0)->getState());
         self::assertSame($state1, $state1->getCities()->get(0)->getState());
