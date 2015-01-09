@@ -7,7 +7,6 @@ use Doctrine\ORM\Cache;
 use Doctrine\ORM\Cache\EntityCacheEntry;
 use Doctrine\ORM\Cache\EntityCacheKey;
 use Doctrine\ORM\Cache\QueryCacheKey;
-use Doctrine\ORM\Proxy\Proxy;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\Tests\Models\Cache\Attraction;
@@ -957,7 +956,7 @@ class SecondLevelCacheQueryCacheTest extends SecondLevelCacheAbstractTest
         self::assertNotNull($state2->getCountry());
         self::assertEquals($queryCount, $this->getCurrentQueryCount());
         self::assertInstanceOf(State::class, $state2);
-        self::assertInstanceOf(Proxy::class, $state2->getCountry());
+        self::assertInstanceOf(GhostObjectInterface::class, $state2->getCountry());
         self::assertEquals($countryName, $state2->getCountry()->getName());
         self::assertEquals($stateId, $state2->getId());
     }
@@ -1048,7 +1047,7 @@ class SecondLevelCacheQueryCacheTest extends SecondLevelCacheAbstractTest
 
         self::assertEquals($queryCount, $this->getCurrentQueryCount());
         self::assertInstanceOf(State::class, $state2);
-        self::assertInstanceOf(Proxy::class, $state2->getCountry());
+        self::assertInstanceOf(GhostObjectInterface::class, $state2->getCountry());
         self::assertInstanceOf(City::class, $state2->getCities()->get(0));
         self::assertInstanceOf(State::class, $state2->getCities()->get(0)->getState());
         self::assertSame($state2, $state2->getCities()->get(0)->getState());

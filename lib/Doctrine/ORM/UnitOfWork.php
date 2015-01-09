@@ -19,15 +19,6 @@
 
 namespace Doctrine\ORM;
 
-use Doctrine\Common\Persistence\Mapping\RuntimeReflectionService;
-use Doctrine\DBAL\LockMode;
-use Doctrine\ORM\Internal\HydrationCompleteHandler;
-use Doctrine\ORM\Mapping\Reflection\ReflectionPropertiesGetter;
-use Exception;
-use InvalidArgumentException;
-use ProxyManager\Proxy\GhostObjectInterface;
-use UnexpectedValueException;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\Common\Persistence\ObjectManagerAware;
@@ -66,6 +57,7 @@ use Doctrine\ORM\Sequencing\AssignedGenerator;
 use Doctrine\ORM\Utility\IdentifierFlattener;
 use Exception;
 use InvalidArgumentException;
+use ProxyManager\Proxy\GhostObjectInterface;
 use UnexpectedValueException;
 
 /**
@@ -1793,6 +1785,11 @@ class UnitOfWork implements PropertyChangedListener
         $managedCopy = $entity;
 
         if ($this->getEntityState($entity, self::STATE_DETACHED) !== self::STATE_MANAGED) {
+            if ($entity instanceof GhostObjectInterface && ! $entity->isProxyInitialized()) {
+                $this->em->getProxyFactory()->resetUninitializedProxy($entity);
+                $entity->initializeProxy();
+            }
+
             // Try to look the entity up in the identity map.
             $id = $class->getIdentifierValues($entity);
 
@@ -2502,7 +2499,7 @@ class UnitOfWork implements PropertyChangedListener
                 isset($hints[Query::HINT_REFRESH])
                 && isset($hints[Query::HINT_REFRESH_ENTITY])
                 && ($unmanagedProxy = $hints[Query::HINT_REFRESH_ENTITY]) !== $entity
-                && $unmanagedProxy instanceof Proxy
+                && $unmanagedProxy instanceof GhostObjectInterface
                 && $this->isIdentifierEquals($unmanagedProxy, $entity)
             ) {
                 // DDC-1238 - we have a managed instance, but it isn't the provided one.
@@ -2751,6 +2748,15 @@ class UnitOfWork implements PropertyChangedListener
                             $managedData = $this->originalEntityData[spl_object_hash($newValue)];
                             break;
                     }
+
+                    if (
+                        $newValue instanceof NotifyPropertyChanged &&
+                        ( ! $newValue instanceof GhostObjectInterface || $newValue->isProxyInitialized())
+                    ) {
+                        $newValue->addPropertyChangedListener($this);
+                    }
+                    $this->entityStates[$newValueOid] = self::STATE_MANAGED;
+                    // make sure that when an proxy is then finally loaded, $this->originalEntityData is set also!
 
                     $this->registerManaged($newValue, $associatedId, $managedData);
 
@@ -3074,7 +3080,7 @@ class UnitOfWork implements PropertyChangedListener
 
         $this->addToIdentityMap($entity);
 
-        if ($entity instanceof NotifyPropertyChanged && ! $isProxy) {
+        if ($entity instanceof NotifyPropertyChanged && ( ! $entity instanceof GhostObjectInterface || $entity->isProxyInitialized())) {
             $entity->addPropertyChangedListener($this);
         }
     }
@@ -3181,8 +3187,8 @@ class UnitOfWork implements PropertyChangedListener
      */
     public function initializeObject($obj)
     {
-        if ($obj instanceof Proxy) {
-            $obj->__load();
+        if ($obj instanceof GhostObjectInterface) {
+            $obj->initializeProxy();
 
             return;
         }

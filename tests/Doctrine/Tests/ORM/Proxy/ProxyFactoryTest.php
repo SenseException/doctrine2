@@ -3,13 +3,13 @@
 namespace Doctrine\Tests\ORM\Proxy;
 
 use Doctrine\ORM\Proxy\Factory\DefaultProxyResolver;
-use Doctrine\ORM\Proxy\Factory\ProxyFactory;
 use Doctrine\ORM\Configuration\ProxyConfiguration;
 use Doctrine\ORM\EntityNotFoundException;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Persisters\Entity\BasicEntityPersister;
 use Doctrine\ORM\Proxy\Factory\StaticProxyFactory;
 use Doctrine\ORM\Reflection\RuntimeReflectionService;
+use Doctrine\ORM\Proxy\ProxyFactory;
 use Doctrine\Tests\Mocks\ConnectionMock;
 use Doctrine\Tests\Mocks\DriverMock;
 use Doctrine\Tests\Mocks\EntityManagerMock;

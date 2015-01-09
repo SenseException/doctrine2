@@ -59,7 +59,7 @@ class DDC1690Test extends \Doctrine\Tests\OrmFunctionalTestCase
             'Verifying that $child is a proxy before using proxy API'
         );
         self::assertCount(0, $child->listeners);
-        $child->__load();
+        $child->initializeProxy();
         self::assertCount(1, $child->listeners);
         unset($parent, $child);
 

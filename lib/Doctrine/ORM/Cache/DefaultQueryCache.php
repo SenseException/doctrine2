@@ -20,17 +20,14 @@
 
 namespace Doctrine\ORM\Cache;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Cache\Persister\CachedPersister;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\AssociationMetadata;
 use Doctrine\ORM\Mapping\ToOneAssociationMetadata;
 use Doctrine\ORM\Query\ResultSetMapping;
-use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\ORM\PersistentCollection;
-use Doctrine\Common\Proxy\Proxy;
 use Doctrine\ORM\Cache;
 use Doctrine\ORM\Query;
+use ProxyManager\Proxy\GhostObjectInterface;
 
 /**
  * Default query cache implementation.
@@ -284,9 +281,8 @@ class DefaultQueryCache implements QueryCache
                 $parentClass  = $rsm->aliasMap[$parentAlias];
                 $metadata     = $this->em->getClassMetadata($parentClass);
                 $association  = $metadata->getProperty($name);
-                $assocValue   = $this->getAssociationValue($rsm, $alias, $entity);
 
-                if ($assocValue === null) {
+                if (($assocValue = $metadata->getFieldValue($entity, $name)) === null || $assocValue instanceof GhostObjectInterface) {
                     continue;
                 }
 
