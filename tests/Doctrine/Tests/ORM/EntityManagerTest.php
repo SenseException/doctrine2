@@ -151,7 +151,6 @@ class EntityManagerTest extends OrmTestCase
             ['persist'],
             ['remove'],
             ['refresh'],
-            ['detach']
         ];
     }
 
