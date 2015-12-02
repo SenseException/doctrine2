@@ -150,7 +150,6 @@ class EntityManagerTest extends OrmTestCase
         return [
             ['persist'],
             ['remove'],
-            ['merge'],
             ['refresh'],
             ['detach']
         ];
@@ -172,7 +171,6 @@ class EntityManagerTest extends OrmTestCase
             ['flush'],
             ['persist'],
             ['remove'],
-            ['merge'],
             ['refresh'],
         ];
     }
