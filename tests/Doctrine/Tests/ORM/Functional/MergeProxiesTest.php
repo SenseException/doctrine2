@@ -7,10 +7,10 @@ use Doctrine\DBAL\Logging\DebugStack;
 use Doctrine\DBAL\Logging\SQLLogger;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Proxy\Proxy;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\Tests\Models\Generic\DateTimeModel;
 use Doctrine\Tests\OrmFunctionalTestCase;
+use ProxyManager\Proxy\GhostObjectInterface;
 
 class MergeProxiesTest extends OrmFunctionalTestCase
 {
@@ -79,7 +79,7 @@ class MergeProxiesTest extends OrmFunctionalTestCase
 
         self::assertSame($managed, $this->em->merge($managed));
 
-        self::assertFalse($managed->__isInitialized());
+        self::assertFalse($managed->isProxyInitialized());
     }
 
     /**
@@ -101,7 +101,7 @@ class MergeProxiesTest extends OrmFunctionalTestCase
 
         $managed = $this->em->getReference(DateTimeModel::class, $date->id);
 
-        self::assertInstanceOf(Proxy::class, $managed);
+        self::assertInstanceOf(GhostObjectInterface::class, $managed);
         self::assertFalse($managed->__isInitialized());
 
         $date->date = $dateTime = new \DateTime();
@@ -199,9 +199,9 @@ class MergeProxiesTest extends OrmFunctionalTestCase
         $unManagedProxy = $em1->getReference(DateTimeModel::class, $file1->id);
         $mergedInstance = $em2->merge($unManagedProxy);
 
-        self::assertNotInstanceOf(Proxy::class, $mergedInstance);
+        self::assertNotInstanceOf(GhostObjectInterface::class, $mergedInstance);
         self::assertNotSame($unManagedProxy, $mergedInstance);
-        self::assertFalse($unManagedProxy->__isInitialized());
+        self::assertFalse($unManagedProxy->isProxyInitialized());
 
         self::assertCount(
             $queryCount1,
@@ -214,7 +214,7 @@ class MergeProxiesTest extends OrmFunctionalTestCase
             'Loading the merged instance was done via the second entity manager'
         );
 
-        $unManagedProxy->__load();
+        $unManagedProxy->initializeProxy();
 
         self::assertCount(
             $queryCount1 + 1,
