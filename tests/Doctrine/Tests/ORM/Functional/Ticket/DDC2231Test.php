@@ -38,7 +38,10 @@ class DDC2231Test extends \Doctrine\Tests\OrmFunctionalTestCase
 
         $id = $y1ref->doSomething();
 
-        self::assertTrue($y1ref->isProxyInitialized());
+        self::assertFalse($y1ref->isProxyInitialized());
+
+        $y1ref->initializeProxy();
+
         self::assertEquals($this->em, $y1ref->om);
     }
 }
