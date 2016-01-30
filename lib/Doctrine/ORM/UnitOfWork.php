@@ -1840,8 +1840,21 @@ class UnitOfWork implements PropertyChangedListener
 
             $visited[$oid] = $managedCopy; // mark visited
 
+
             if ($class->changeTrackingPolicy === ChangeTrackingPolicy::DEFERRED_EXPLICIT) {
                 $this->scheduleForSynchronization($entity);
+            }
+
+            if ($this->isLoaded($entity)) {
+                if ($managedCopy instanceof GhostObjectInterface) {
+                    $managedCopy->initializeProxy();
+                }
+
+                $this->mergeEntityStateIntoManagedCopy($entity, $managedCopy);
+            }
+
+            if ($class->isChangeTrackingDeferredExplicit()) {
+                $this->scheduleForDirtyCheck($entity);
             }
         }
 
@@ -1892,7 +1905,7 @@ class UnitOfWork implements PropertyChangedListener
      */
     private function isLoaded($entity)
     {
-        return !($entity instanceof Proxy) || $entity->__isInitialized();
+        return !($entity instanceof GhostObjectInterface) || $entity->isProxyInitialized();
     }
 
     /**
