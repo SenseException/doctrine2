@@ -196,7 +196,7 @@ class PhpExporter extends AbstractExporter
 
     private function exportAssociationMetadata(ClassMetadata $metadata, AssociationMetadata $association, array &$lines)
     {
-        $cascade = ['remove', 'persist', 'refresh', 'merge', 'detach'];
+        $cascade = ['remove', 'persist', 'refresh'];
 
         foreach ($cascade as $key => $value) {
             if ( ! in_array($value, $association->getCascade())) {

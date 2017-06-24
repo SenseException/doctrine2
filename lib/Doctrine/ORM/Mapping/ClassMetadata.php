@@ -947,7 +947,7 @@ class ClassMetadata implements TableOwner, ClassMetadataInterface
         }
 
         // Cascades
-        $cascadeTypes = ['remove', 'persist', 'refresh', 'merge', 'detach'];
+        $cascadeTypes = ['remove', 'persist', 'refresh'];
         $cascades     = array_map('strtolower', $property->getCascade());
 
         if (in_array('all', $cascades)) {
