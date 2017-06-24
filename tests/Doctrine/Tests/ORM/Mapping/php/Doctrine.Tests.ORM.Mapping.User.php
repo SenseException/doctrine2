@@ -155,6 +155,6 @@ $association = new Mapping\ManyToManyAssociationMetadata('groups');
 
 $association->setJoinTable($joinTable);
 $association->setTargetEntity(Group::class);
-$association->setCascade(['remove', 'persist', 'refresh', 'merge', 'detach']);
+$association->setCascade(['remove', 'persist', 'refresh']);
 
 $metadata->addProperty($association);

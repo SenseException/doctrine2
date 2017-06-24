@@ -27,7 +27,7 @@ class DDC964User
     /**
      * @var ArrayCollection
      *
-     * @ORM\ManyToMany(targetEntity="DDC964Group", inversedBy="users", cascade={"persist", "merge", "detach"})
+     * @ORM\ManyToMany(targetEntity="DDC964Group", inversedBy="users", cascade={"persist"})
      * @ORM\JoinTable(name="ddc964_users_groups",
      *  joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
      *  inverseJoinColumns={@ORM\JoinColumn(name="group_id", referencedColumnName="id")}
@@ -38,7 +38,7 @@ class DDC964User
     /**
      * @var DDC964Address
      *
-     * @ORM\ManyToOne(targetEntity="DDC964Address", cascade={"persist", "merge"})
+     * @ORM\ManyToOne(targetEntity="DDC964Address", cascade={"persist"})
      * @ORM\JoinColumn(name="address_id", referencedColumnName="id")
      */
     protected $address;
@@ -140,7 +140,7 @@ class DDC964User
 
         $association->setJoinColumns($joinColumns);
         $association->setTargetEntity('DDC964Address');
-        $association->setCascade(['persist', 'merge']);
+        $association->setCascade(['persist']);
 
         $metadata->addProperty($association);
 
@@ -166,7 +166,7 @@ class DDC964User
         $association->setJoinTable($joinTable);
         $association->setTargetEntity('DDC964Group');
         $association->setInversedBy('users');
-        $association->setCascade(['persist', 'merge', 'detach']);
+        $association->setCascade(['persist']);
 
         $metadata->addProperty($association);
 

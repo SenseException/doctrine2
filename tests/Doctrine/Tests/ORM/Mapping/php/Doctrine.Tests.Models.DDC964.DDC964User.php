@@ -35,7 +35,7 @@ $association = new Mapping\ManyToOneAssociationMetadata('address');
 
 $association->setJoinColumns($joinColumns);
 $association->setTargetEntity('DDC964Address');
-$association->setCascade(['persist', 'merge']);
+$association->setCascade(['persist']);
 
 $metadata->addProperty($association);
 
@@ -61,7 +61,7 @@ $association = new Mapping\ManyToManyAssociationMetadata('groups');
 $association->setJoinTable($joinTable);
 $association->setTargetEntity('DDC964Group');
 $association->setInversedBy('user');
-$association->setCascade(['persist','merge','detach']);
+$association->setCascade(['persist']);
 
 $metadata->addProperty($association);
 

@@ -395,7 +395,7 @@ abstract class AbstractMappingDriverTest extends OrmTestCase
         self::assertTrue($association->isOwningSide());
 
         // Make sure that cascade-all works as expected
-        self::assertEquals(['remove', 'persist', 'refresh', 'merge', 'detach'], $association->getCascade());
+        self::assertEquals(['remove', 'persist', 'refresh'], $association->getCascade());
 
         // Test Order By
         self::assertEquals([], $association->getOrderBy());
@@ -1393,7 +1393,7 @@ class User
 
         $association->setJoinTable($joinTable);
         $association->setTargetEntity(Group::class);
-        $association->setCascade(['remove', 'persist', 'refresh', 'merge', 'detach']);
+        $association->setCascade(['remove', 'persist', 'refresh']);
 
         $metadata->addProperty($association);
     }
